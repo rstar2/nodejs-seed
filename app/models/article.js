@@ -9,7 +9,7 @@ var ArticleSchema = new mongoose.Schema({
 });
 
 ArticleSchema.virtual('date')
-  .get(function(){
+  .get(function () {
     return this._id.getTimestamp();
   });
 

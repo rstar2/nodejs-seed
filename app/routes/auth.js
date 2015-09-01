@@ -4,6 +4,8 @@ var router = express.Router();
 var passport = require('passport');
 var Account = require('mongoose').model('Account');
 
+var passportEnsureAuth = require('connect-ensure-login'); // this will add the ensureAuthenticated() function
+
 module.exports = function (app) {
   app.use('/', router);
 };
@@ -12,16 +14,17 @@ module.exports = function (app) {
 
 /* Register page */
 
-router.get('/register', function(req, res) {
-  res.render('register', { });
+router.get('/register', function (req, res) {
+  res.render('register', {});
 });
 
-router.post('/register', function(req, res) {
-  Account.register(new Account({ username : req.body.username }), req.body.password, function(err, account) {
+router.post('/register', function (req, res) {
+  Account.register(new Account({username: req.body.username}), req.body.password, function (err, account) {
     if (err) {
       return res.render('register', {
-          account : account,
-          info: "Sorry. That username already exists. Try again."}
+          account: account,
+          info: "Sorry. That username already exists. Try again."
+        }
       );
     }
 
@@ -33,23 +36,23 @@ router.post('/register', function(req, res) {
 
 /* Login page */
 
-router.get('/login', function(req, res) {
-  res.render('login', { user : req.user });
+router.get('/login', function (req, res) {
+  res.render('login', {user: req.user});
 });
 
-router.post('/login', passport.authenticate('local'), function(req, res) {
+router.post('/login', passport.authenticate('local'), function (req, res) {
   res.redirect(req.session.returnTo || '/');
 });
 
 /* Logout page */
 
-router.get('/logout', function(req, res) {
+router.get('/logout', function (req, res) {
   req.logout();
   res.redirect('/');
 });
 
 router.get('/profile',
-  // todo - passportEnsureAuth.ensureAuthenticated(),
-  function(req, res){
-    res.render('profile', { user: req.user });
+  passportEnsureAuth.ensureAuthenticated(),
+  function (req, res) {
+    res.render('profile', {user: req.user});
   });

@@ -8,13 +8,10 @@ var bodyParser = require('body-parser');
 var compress = require('compression');
 var methodOverride = require('method-override');
 
-var mongoose = require('mongoose');
 
 var session = require('express-session');
 var MongoDBStore = require('connect-mongodb-session')(session);
 
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
 
 module.exports = function (app, config) {
   var env = process.env.NODE_ENV || 'development';
@@ -55,7 +52,7 @@ module.exports = function (app, config) {
   var mongoStoreSession = new MongoDBStore({
     uri: config.db,
     collection: 'sessions'
-  }, function(error) {
+  }, function (error) {
     // Should have gotten an error
   });
 
@@ -82,6 +79,7 @@ module.exports = function (app, config) {
 
   //---------------------------
 
+  // add the passport middleware
   require('./passport')(app, config);
 
   //---------------------------
