@@ -1,0 +1,33 @@
+{
+  "name": "yo-express-mvc",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.13.3",
+    "chai": "^3.2.0",
+    "compression": "^1.5.2",
+    "connect-mongodb-session": "^1.0.5",
+    "cookie-parser": "^1.3.3",
+    "express": "^4.13.3",
+    "express-session": "^1.11.3",
+    "glob": "^5.0.3",
+    "jade": "^1.11.0",
+    "method-override": "^2.3.0",
+    "mongoose": "^4.1.2",
+    "morgan": "^1.6.1",
+    "passport": "^0.3.0",
+    "passport-local": "^1.0.0",
+    "serve-favicon": "^2.3.0"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-develop": "^0.4.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "request": "^2.60.0",
+    "time-grunt": "^1.2.1",
+    "load-grunt-tasks": "^3.2.0"
+  }
+}
