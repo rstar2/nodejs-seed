@@ -8,10 +8,9 @@ var ArticleSchema = new mongoose.Schema({
   text: String
 });
 
-ArticleSchema.virtual('date')
-  .get(function () {
-    return this._id.getTimestamp();
-  });
+ArticleSchema.virtual('date').get(function () {
+  return this._id.getTimestamp();
+});
 
 var ArticleModel = mongoose.model('Article', ArticleSchema);
 

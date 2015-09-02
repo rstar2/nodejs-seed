@@ -8,9 +8,10 @@ var bodyParser = require('body-parser');
 var compress = require('compression');
 var methodOverride = require('method-override');
 
-
 var session = require('express-session');
 var MongoDBStore = require('connect-mongodb-session')(session);
+
+var flash = require('connect-flash');
 
 
 module.exports = function (app, config) {
@@ -76,6 +77,11 @@ module.exports = function (app, config) {
     // use MongoDB
     store: mongoStoreSession
   }));
+
+  //---------------------------
+
+  // use connect-flash for flash messages stored in session
+  app.use(flash());
 
   //---------------------------
 

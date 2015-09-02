@@ -2,33 +2,36 @@ var path = require('path'),
   rootPath = path.normalize(__dirname + '/..'),
   env = process.env.NODE_ENV || 'development';
 
+var extend = require('node.extend');
+
 var config = {
+  // common configuration for all the environments, of course any property could be overwritten
+  common: {
+    root: rootPath,
+    app: {
+      name: 'nodejs-site-skeleton'
+    },
+    port: 3000
+  },
+
+  // development configuration
   development: {
-    root: rootPath,
-    app: {
-      name: 'yo-express-mvc'
-    },
-    port: 3000,
-    db: 'mongodb://localhost/yo-express-mvc-development'
+    db: 'mongodb://localhost/nodejs-site-skeleton-dev',
+    facebook: {
+      appKey: 131313,
+      appSecret: 1231213
+    }
   },
 
+  // test configuration
   test: {
-    root: rootPath,
-    app: {
-      name: 'yo-express-mvc'
-    },
-    port: 3000,
-    db: 'mongodb://localhost/yo-express-mvc-test'
+    db: 'mongodb://localhost/nodejs-site-skeleton-test'
   },
 
+  // production configuration
   production: {
-    root: rootPath,
-    app: {
-      name: 'yo-express-mvc'
-    },
-    port: 3000,
-    db: 'mongodb://localhost/yo-express-mvc-production'
+    db: 'mongodb://localhost/nodejs-site-skeleton-prod'
   }
 };
 
-module.exports = config[env];
+module.exports = extend(true, {}, config.common, config[env]);

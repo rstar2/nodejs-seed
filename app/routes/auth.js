@@ -14,34 +14,34 @@ module.exports = function (app) {
 
 /* Register page */
 
+// show the register form
 router.get('/register', function (req, res) {
-  res.render('register', {});
+  // render the page and pass in any flash data if it exists
+  res.render('register', { message: req.flash('registerMessage') });
 });
 
-router.post('/register', function (req, res) {
-  Account.register(new Account({username: req.body.username}), req.body.password, function (err, account) {
-    if (err) {
-      return res.render('register', {
-          account: account,
-          info: "Sorry. That username already exists. Try again."
-        }
-      );
-    }
-
-    passport.authenticate('local')(req, res, function () {
-      res.redirect('/');
-    });
-  });
-});
+// process the register form
+router.post('/register', passport.authenticate('local-register', {
+  successRedirect: '/profile', // redirect to the secure profile section
+  failureRedirect: '/register', // redirect back to the register page if there is an error
+  failureFlash: true // allow flash messages
+}));
 
 /* Login page */
 
+// show the login form
 router.get('/login', function (req, res) {
-  res.render('login', {user: req.user});
+  // render the page and pass in any flash data if it exists
+  res.render('login', { account: req.user, message: req.flash('loginMessage') });
 });
 
-router.post('/login', passport.authenticate('local'), function (req, res) {
-  res.redirect(req.session.returnTo || '/');
+// process the login form
+router.post('/login', function (req, res, next) {
+  passport.authenticate('local-login', {
+    successRedirect : req.session.returnTo || '/profile', // redirect to the secure profile section
+    failureRedirect : '/login', // redirect back to the signup page if there is an error
+    failureFlash : true // allow flash messages
+  })(req, res, next);
 });
 
 /* Logout page */
@@ -54,5 +54,5 @@ router.get('/logout', function (req, res) {
 router.get('/profile',
   passportEnsureAuth.ensureAuthenticated(),
   function (req, res) {
-    res.render('profile', {user: req.user});
+    res.render('profile', {account: req.user});
   });
