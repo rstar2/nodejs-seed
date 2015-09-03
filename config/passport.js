@@ -32,7 +32,7 @@ module.exports = function (app, config) {
     },
     function (req, email, password, done) {
       // asynchronous
-      // User.findOne wont fire unless data is sent back
+      // Account.findOne wont fire unless data is sent back
       process.nextTick(function () {
         // find a account whose email is the same as the forms email
         // we are checking to see if the account trying to login already exists
@@ -73,24 +73,112 @@ module.exports = function (app, config) {
       passReqToCallback: true // allows us to pass back the entire request to the callback
     },
     function (req, email, password, done) { // callback with email and password from our form
-      // find a account whose email is the same as the forms email
-      // we are checking to see if the account trying to login already exists
-      Account.findOne({'local.email': email}, function (err, account) {
-        // if there are any errors, return the error before anything else
-        if (err)
-          return done(err);
+      // asynchronous
+      process.nextTick(function () {
+        // find a account whose email is the same as the forms email
+        // we are checking to see if the account trying to login already exists
+        Account.findOne({'local.email': email}, function (err, account) {
+          // if there are any errors, return the error before anything else
+          if (err)
+            return done(err);
 
-        // if no account is found, return the message
-        if (!account)
-          return done(null, false, req.flash('loginMessage', 'No account found with that email.')); // req.flash is the way to set flashdata using connect-flash
+          // if no account is found, return the message
+          if (!account)
+            return done(null, false, req.flash('loginMessage', 'No account found with that email.')); // req.flash is the way to set flashdata using connect-flash
 
-        // if the account is found but the password is wrong
-        if (!account.validPassword(password))
-          return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
+          // if the account is found but the password is wrong
+          if (!account.validPassword(password))
+            return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
 
-        // all is well, return successful account
-        return done(null, account);
+          // all is well, return successful account
+          return done(null, account);
+        });
       });
     }));
+
+  // =========================================================================
+  // FACEBOOK AUTH ===========================================================
+  // =========================================================================
+
+  if (config.facebook.enabled) {
+    var FacebookStrategy = require('passport-facebook').Strategy;
+    passport.use(new FacebookStrategy({
+        clientID: config.facebook.appKey,
+        clientSecret: config.facebook.appSecret,
+        callbackURL: config.facebook.callbackURL,
+        passReqToCallback: true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
+      },
+      function (req, accessToken, refreshToken, profile, done) {
+        // asynchronous
+        process.nextTick(function () {
+          // check if the account is already logged in
+          if (!req.user) {
+            // find the account in the database based on their facebook id
+            Account.findOne({'facebook.id': profile.id}, function (err, account) {
+              // if there is an error, stop everything and return that
+              // ie an error connecting to the database
+              if (err)
+                return done(err);
+
+              // if the account is found, then log them in
+              if (account) {
+                // if there is a facebook id already but no token (account was linked at one point and then removed)
+                if (!account.facebook.token) {
+                  account.facebook.token = accessToken;
+                  account.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
+                  account.facebook.email = profile.emails[0].value;
+
+                  account.save(function (err) {
+                    if (err)
+                      throw err;
+                    return done(null, account);
+                  });
+                }
+
+                return done(null, account); // account found, return that account
+              } else {
+                // if there is no account found with that facebook id, create them
+                var newAccount = new Account();
+
+                // set all of the facebook information in our Account model
+                newAccount.facebook.id = profile.id;
+                newAccount.facebook.token = accessToken;
+                newAccount.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
+                newAccount.facebook.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
+
+                // save our account to the database
+                newAccount.save(function (err) {
+                  if (err)
+                    throw err;
+
+                  // if successful, return the new account
+                  return done(null, newAccount);
+                });
+              }
+            });
+
+          } else {
+            // account already exists and is logged in, we have to link accounts
+            var account = req.user; // pull the account out of the session
+
+            // update the current account's facebook credentials
+            account.facebook.id = profile.id;
+            account.facebook.token = accessToken;
+            account.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
+            account.facebook.email = profile.emails[0].value;
+
+            // save the account
+            account.save(function (err) {
+              if (err)
+                throw err;
+              return done(null, account);
+            });
+          }
+
+        });
+      }
+    ));
+
+  }
 
 };
