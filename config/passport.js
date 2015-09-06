@@ -43,7 +43,7 @@ module.exports = function (app, config) {
 
           // check to see if there's already an account with that email
           if (account) {
-            return done(null, false, req.flash('registerMessage', 'That email is already taken.'));
+            return done(null, false, 'That email is already taken.');
           } else {
             // if there is no account with that email create the account
             var newAccount = new Account();
@@ -84,11 +84,15 @@ module.exports = function (app, config) {
 
           // if no account is found, return the message
           if (!account)
-            return done(null, false, req.flash('loginMessage', 'No account found with that email.')); // req.flash is the way to set flashdata using connect-flash
+            return done(null, false, 'No account found with that email.');
 
           // if the account is found but the password is wrong
-          if (!account.validPassword(password))
-            return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
+          try {
+            if (!account.validPassword(password))
+              return done(null, false, 'Oops! Wrong password.');
+          } catch (e) {
+            return done(e, false, 'Oops! Failed password.');
+          }
 
           // all is well, return successful account
           return done(null, account);
@@ -125,8 +129,12 @@ module.exports = function (app, config) {
                 // if there is a facebook id already but no token (account was linked at one point and then removed)
                 if (!account.facebook.token) {
                   account.facebook.token = accessToken;
-                  account.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
-                  account.facebook.email = profile.emails[0].value;
+                  account.facebook.name = profile.displayName;
+                  if (profile.email) {
+                    account.facebook.email = profile.email;
+                  } else if (profile.emails && profile.emails.length) {
+                    account.facebook.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
+                  }
 
                   account.save(function (err) {
                     if (err)
@@ -143,8 +151,12 @@ module.exports = function (app, config) {
                 // set all of the facebook information in our Account model
                 newAccount.facebook.id = profile.id;
                 newAccount.facebook.token = accessToken;
-                newAccount.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
-                newAccount.facebook.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
+                newAccount.facebook.name = profile.displayName;
+                if (profile.email) {
+                  newAccount.facebook.email = profile.email;
+                } else if (profile.emails && profile.emails.length) {
+                  newAccount.facebook.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
+                }
 
                 // save our account to the database
                 newAccount.save(function (err) {
@@ -164,8 +176,12 @@ module.exports = function (app, config) {
             // update the current account's facebook credentials
             account.facebook.id = profile.id;
             account.facebook.token = accessToken;
-            account.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
-            account.facebook.email = profile.emails[0].value;
+            account.facebook.name = profile.displayName;
+            if (profile.email) {
+              account.facebook.email = profile.email;
+            } else if (profile.emails && profile.emails.length) {
+              account.facebook.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
+            }
 
             // save the account
             account.save(function (err) {

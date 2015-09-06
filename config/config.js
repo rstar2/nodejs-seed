@@ -19,10 +19,10 @@ var config = {
     db: 'mongodb://localhost/nodejs-site-skeleton-dev',
     facebook: {
       enabled: true,
-      appKey: 131313,
-      appSecret: 1231213,
-      scope: 'email',
-      callbackURL : 'http://www.example.com/auth/facebook/callback'
+      appKey: '428723043979041',
+      appSecret: 'f5a21426725e402194def7a1e0043f36',
+      scope: ['email'],
+      callbackURL : 'http://localhost:3000/auth/facebook/callback'
     }
   },
 

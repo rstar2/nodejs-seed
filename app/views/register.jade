@@ -3,9 +3,9 @@ extends layout
 block content
   .container
     h1 Register Page
-    p.lead Say something worthwhile here.
-    br
-    form(role='form', action="/register",method="post", style='max-width: 300px;')
+    if (message && message.length)
+      div.alert.alert-danger #{message}
+    form(role='form', action="/auth/register",method="post", style='max-width: 300px;')
       .form-group
         input.form-control(type='text', name="email", placeholder='Enter Email')
       .form-group
@@ -14,5 +14,7 @@ block content
       = ' '
       a(href='/')
         button.btn.btn-primary(type="button") Cancel
-    br
-    h4= info
+      = ' '
+      a.btn.btn-primary(href="/auth/facebook")
+        span.fa.fa-facebook
+        |  Facebook
