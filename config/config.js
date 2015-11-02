@@ -11,7 +11,7 @@ var config = {
     app: {
       name: 'nodejs-site-skeleton'
     },
-    port: 3000,
+    port: process.env.PORT || 3005,
     facebook: {
       enabled: false
     }
@@ -29,20 +29,14 @@ var config = {
     }
   },
 
-  // test configuration
-  test: {
-    db: 'mongodb://localhost/nodejs-site-skeleton-test'
-  },
-
-  // test configuration
+  // staging configuration
   staging: {
     db: 'mongodb://localhost/nodejs-site-skeleton-staging'
   },
 
   // production configuration
   production: {
-    db: 'mongodb://localhost/nodejs-site-skeleton-prod',
-	  port: 3333
+    db: 'mongodb://localhost/nodejs-site-skeleton-prod'
   }
 };
 

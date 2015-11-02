@@ -64,8 +64,7 @@ plan.remote(function(remote) {
   //		respawn
   //		chdir /home/deploy/node-app
   //		env NODE_ENV=production #change this to staging if this is a staging server
-  //		env PORT=3000
-  //		exec /usr/local/bin/node bin/www
+  //		exec /usr/local/bin/node bin/app.js
   // 2.2 also the deplaying user 'username' should have bben given passwordless sudo access with
   //   		echo "deploy ALL=(root) NOPASSWD: /sbin/restart node-app" >> /etc/sudoers
   // remote.exec('sudo restart node-app');
@@ -73,4 +72,4 @@ plan.remote(function(remote) {
 
 
 // RUN it with
-// fly production 
+// $ fly production 
