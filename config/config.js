@@ -11,7 +11,7 @@ var config = {
     app: {
       name: 'nodejs-site-skeleton'
     },
-    port: process.env.PORT || 3005,
+    port: process.env.PORT || 3000,
     facebook: {
       enabled: false
     }
