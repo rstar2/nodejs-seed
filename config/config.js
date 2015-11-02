@@ -31,9 +31,15 @@ var config = {
     db: 'mongodb://localhost/nodejs-site-skeleton-test'
   },
 
+  // test configuration
+  staging: {
+    db: 'mongodb://localhost/nodejs-site-skeleton-staging'
+  },
+
   // production configuration
   production: {
-    db: 'mongodb://localhost/nodejs-site-skeleton-prod'
+    db: 'mongodb://localhost/nodejs-site-skeleton-prod',
+	  port: 3333
   }
 };
 
