@@ -11,7 +11,10 @@ var config = {
     app: {
       name: 'nodejs-site-skeleton'
     },
-    port: 3000
+    port: 3000,
+    facebook: {
+      enabled: false
+    }
   },
 
   // development configuration
