@@ -11,6 +11,8 @@ var methodOverride = require('method-override');
 var session = require('express-session');
 var MongoDBStore = require('connect-mongodb-session')(session);
 
+var exphbs  = require('express-handlebars');
+
 var flash = require('connect-flash');
 
 
@@ -21,6 +23,22 @@ module.exports = function (app, config) {
 
   app.set('views', config.root + '/app/views');
   app.set('view engine', 'jade');
+
+  var hbs = exphbs.create({
+    layoutsDir: config.root + '/app/views/layouts/',
+    defaultLayout: 'main',
+    partialsDir: [config.root + '/app/views/partials/'],
+
+    // Specify helpers which are only registered on this instance.
+    helpers: {
+      foo: function () { return 'FOO!'; },
+      bar: function () { return 'BAR!'; }
+    }
+  });
+
+  app.engine('handlebars', hbs.engine);
+  app.set('views', config.root + '/app/views');
+  app.set('view engine', 'handlebars');
 
   //---------------------------
 
