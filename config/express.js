@@ -21,9 +21,6 @@ module.exports = function (app, config) {
   app.locals.ENV = env;
   app.locals.ENV_DEVELOPMENT = env == 'development';
 
-  app.set('views', config.root + '/app/views');
-  app.set('view engine', 'jade');
-
   var hbs = exphbs.create({
     layoutsDir: config.root + '/app/views/layouts/',
     defaultLayout: 'main',

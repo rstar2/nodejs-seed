@@ -4,12 +4,12 @@
   <p>Welcome to {{title }}</p>
 
   {{#if user}}
+      <p>You are currently logged in as {{user.username}}</p>
+      <a href="/auth/logout"> Logout </a>
+  {{else}}
       <a href="/auth/login"> Login </a>
       <br/>
       <a href="/auth/register"> Register </a>
-  {{else}}
-      <p>You are currently logged in as {{user.username}}</p>
-      <a href="/auth/logout"> Logout </a>
   {{/if}}
 
   {{ foo }}
