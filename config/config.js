@@ -26,7 +26,8 @@ var config = {
       appSecret: 'f5a21426725e402194def7a1e0043f36',
       scope: ['email'],
       callbackURL : 'http://localhost:3000/auth/facebook/callback'
-    }
+    },
+    google_analytics_id: ''
   },
 
   // staging configuration
@@ -36,7 +37,8 @@ var config = {
 
   // production configuration
   production: {
-    db: 'mongodb://localhost/nodejs-site-skeleton-prod'
+    db: 'mongodb://localhost/nodejs-site-skeleton-prod',
+    google_analytics_id: 'UA-74206119-2'
   }
 };
 

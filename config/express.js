@@ -20,6 +20,7 @@ module.exports = function (app, config) {
   var env = process.env.NODE_ENV || 'development';
   app.locals.ENV = env;
   app.locals.ENV_DEVELOPMENT = env == 'development';
+  app.locals.GOOGLE_ANALYTICS_ID = config.google_analytics_id;
 
   var hbs = exphbs.create({
     layoutsDir: config.root + '/app/views/layouts/',

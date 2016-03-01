@@ -1,14 +1,12 @@
 
-<h1>{{title }}</h1>
-<p>Welcome to {{title }}</p>
+<h1>{{ title }}</h1>
+{{> welcome }}
 
 {{#if user}}
-    <p>You are currently logged in as {{user.username}}</p>
+    <p>You are currently logged in as {{ user.username }}</p>
     <a href="/auth/logout">Logout</a>
 {{else}}
     <a href="/auth/login">Login</a>
     <br/>
     <a href="/auth/register">Register</a>
 {{/if}}
-
-{{ foo }}
