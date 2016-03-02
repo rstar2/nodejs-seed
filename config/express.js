@@ -25,12 +25,19 @@ module.exports = function (app, config) {
   var hbs = exphbs.create({
     layoutsDir: config.root + '/app/views/layouts/',
     defaultLayout: 'main',
-    partialsDir: [config.root + '/app/views/partials/'],
+    partialsDir: [
+      // partials just for the server-side
+      config.root + '/app/views/partials/',
+
+      // partials shared between the server-side and client-side
+      config.root + '/shared/templates'
+    ],
 
     // Specify helpers which are only registered on this instance.
+    // they can be overwritten (or added more) in for a specific view inside the specific 'render' method
     helpers: {
-      foo: function () { return 'FOO!'; },
-      bar: function () { return 'BAR!'; }
+      global_helper: function () { return 'Global Helper'; },
+      global_helper2: function () { return 'Global Helper 2'; }
     }
   });
 
@@ -108,8 +115,8 @@ module.exports = function (app, config) {
 
   // all other custom routes
   var routes = glob.sync(config.root + '/app/routes/*.js');
-  routes.forEach(function (controller) {
-    require(controller)(app, config);
+  routes.forEach(function (route) {
+    require(route)(app, config);
   });
 
   //---------------------------

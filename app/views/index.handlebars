@@ -10,3 +10,17 @@
     <br/>
     <a href="/auth/register">Register</a>
 {{/if}}
+
+<h1>Testing helpers/partials</h1>
+
+{{ global_helper }}
+{{ global_helper2 }}
+{{ specific_helper }}
+
+{{> global_partial }}
+{{> shared_partial }}
+
+{{!-- This partial could be missing so use the '{{#>' syntax --}}
+{{#> specific_partial }}
+    Missing specific partial
+{{/ specific_partial }}
