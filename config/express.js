@@ -30,15 +30,17 @@ module.exports = function (app, config) {
       config.root + '/app/views/partials/',
 
       // partials shared between the server-side and client-side
-      config.root + '/shared/templates'
+      config.root + '/app/views/shared_templates'
     ],
 
     // Specify helpers which are only registered on this instance.
     // they can be overwritten (or added more) in for a specific view inside the specific 'render' method
-    helpers: {
-      global_helper: function () { return 'Global Helper'; },
-      global_helper2: function () { return 'Global Helper 2'; }
-    }
+    //helpers: {
+    //  global_helper: function () { return 'Global Helper'; },
+    //  global_helper2: function () { return 'Global Helper 2'; }
+    //},
+    // or just defined all the  helpers inside another JavaScript file
+    helpers: require('./../app/helpers')
   });
 
   app.engine('handlebars', hbs.engine);
@@ -116,7 +118,7 @@ module.exports = function (app, config) {
   // all other custom routes
   var routes = glob.sync(config.root + '/app/routes/*.js');
   routes.forEach(function (route) {
-    require(route)(app, config);
+    require(route)(app, config, hbs);
   });
 
   //---------------------------
