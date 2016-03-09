@@ -50,11 +50,11 @@ module.exports = function (app, config) {
   app.set('view engine', 'handlebars');
 
   // Middleware to expose the app's shared templates to the cliet-side of the app
-// for pages which need them.
+  // for pages which need them.
   function exposeTemplates(req, res, next) {
     // Uses the `ExpressHandlebars` instance to get the get the **precompiled**
     // templates which will be shared with the client-side of the app.
-    hbs.getTemplates('shared/templates/', {
+    hbs.getTemplates(config.root + '/app/views/shared_templates', {
       cache      : app.enabled('view cache'),
       precompiled: true
     }).then(function (templates) {
