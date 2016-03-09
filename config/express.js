@@ -1,7 +1,6 @@
 var express = require('express');
 var glob = require('glob');
 
-var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -15,12 +14,15 @@ var exphbs  = require('express-handlebars');
 
 var flash = require('connect-flash');
 
-
 module.exports = function (app, config) {
   var env = process.env.NODE_ENV || 'development';
   app.locals.ENV = env;
   app.locals.ENV_DEVELOPMENT = env == 'development';
   app.locals.GOOGLE_ANALYTICS_ID = config.google_analytics_id;
+
+  //---------------------------
+  // View/template engine - in this case Handlebars
+  //---------------------------
 
   var hbs = exphbs.create({
     layoutsDir: config.root + '/app/views/layouts/',
@@ -47,10 +49,45 @@ module.exports = function (app, config) {
   app.set('views', config.root + '/app/views');
   app.set('view engine', 'handlebars');
 
+  // Middleware to expose the app's shared templates to the cliet-side of the app
+// for pages which need them.
+  function exposeTemplates(req, res, next) {
+    // Uses the `ExpressHandlebars` instance to get the get the **precompiled**
+    // templates which will be shared with the client-side of the app.
+    hbs.getTemplates('shared/templates/', {
+      cache      : app.enabled('view cache'),
+      precompiled: true
+    }).then(function (templates) {
+      // RegExp to remove the ".handlebars" extension from the template names.
+      var extRegex = new RegExp(hbs.extname + '$');
+
+      // Creates an array of templates which are exposed via
+      // `res.locals.templates`.
+      templates = Object.keys(templates).map(function (name) {
+        return {
+          name    : name.replace(extRegex, ''),
+          template: templates[name]
+        };
+      });
+
+      // Exposes the templates during view rendering.
+      if (templates.length) {
+        res.locals.templates = templates;
+      }
+
+      setImmediate(next);
+    })
+      .catch(next);
+  }
+  app.exposeTemplates = exposeTemplates;
+
+  //---------------------------
+  //---------------------------
   //---------------------------
 
   // uncomment after placing your favicon in /public
   // the favicon is cached in memory - not read each time from the file
+  //var favicon = require('serve-favicon');
   //app.use(favicon(config.root + '/public/favicon.ico'));
 
   // a simple logger middleware
@@ -70,6 +107,8 @@ module.exports = function (app, config) {
   app.use(compress());
   app.use(methodOverride());
 
+  //---------------------------
+  //---------------------------
   //---------------------------
 
   // add a session middleware and store the sessions in MongoDB
@@ -104,15 +143,21 @@ module.exports = function (app, config) {
   }));
 
   //---------------------------
+  //---------------------------
+  //---------------------------
 
   // use connect-flash for flash messages stored in session
   app.use(flash());
 
   //---------------------------
+  //---------------------------
+  //---------------------------
 
   // add the passport middleware
   require('./passport')(app, config);
 
+  //---------------------------
+  //---------------------------
   //---------------------------
 
   // all other custom routes
@@ -121,6 +166,8 @@ module.exports = function (app, config) {
     require(route)(app, config, hbs);
   });
 
+  //---------------------------
+  //---------------------------
   //---------------------------
 
   // finally the error middlewares
