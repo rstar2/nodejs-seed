@@ -7,6 +7,12 @@ module.exports = function (app, config, hbs) {
   app.use('/', app.exposeTemplates, router);
 
   router.get('/', function (req, res, next) {
+    // if user is already authenticated (e.g. logined) then go straight to the protected prifile page
+    if (req.isAuthenticated()) {
+      res.redirect('/protected/profile');
+      return;
+    }
+
     Article.find(function (err, articles) {
       if (err) return next(err);
       res.render('home', {
