@@ -104,20 +104,20 @@ module.exports = function (app, config) {
     // user account will stay active in case they want to reconnect in the future
 
     // local -----------------------------------
-    app.get('/unlink/local', function(req, res) {
-      var user            = req.user;
-      user.local.email    = undefined;
+    app.get('/unlink/local', function (req, res) {
+      var user = req.user;
+      user.local.email = undefined;
       user.local.password = undefined;
-      user.save(function(err) {
+      user.save(function (err) {
         res.redirect('/profile');
       });
     });
 
     // facebook -------------------------------
-    app.get('/unlink/facebook', function(req, res) {
-      var user            = req.user;
+    app.get('/unlink/facebook', function (req, res) {
+      var user = req.user;
       user.facebook.token = undefined;
-      user.save(function(err) {
+      user.save(function (err) {
         res.redirect('/profile');
       });
     });
