@@ -12,6 +12,16 @@ var config = {
       name: 'nodejs-site-skeleton'
     },
     port: process.env.PORT || 3000,
+
+    // properties for the 'express-session' middleware
+    session: {
+      name: 'app.sess',
+      secret: '!__SEKR37__!',
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+      }
+    },
+
     facebook: {
       enabled: false
     }

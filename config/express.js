@@ -122,14 +122,7 @@ module.exports = function (app, config) {
   });
 
   // 2. Create the session middleware
-  app.use(session({
-    // the cookie name and properties
-    name: 'app.sess',
-    secret: 'SEKR37',
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
-    },
-
+  app.use(session(extend(true, {}, config.session, {
     // Force a cookie to be set on every response. This resets the expiration date.
     rolling: false,
     // Forces the session to be saved back to the session store, even if the session was never modified during the request
@@ -140,7 +133,7 @@ module.exports = function (app, config) {
 
     // use MongoDB
     store: mongoStoreSession
-  }));
+  })));
 
   //---------------------------
   //---------------------------
