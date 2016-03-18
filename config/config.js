@@ -13,7 +13,7 @@ var config = {
     },
 
     port: process.env.PORT || 3000,
-    //portSecure: process.env.PORT_SECURE || 3443,
+    portSecure: process.env.PORT_SECURE || 3443,
     httpRedirectToHttps: true,
 
     // properties for the 'express-session' middleware

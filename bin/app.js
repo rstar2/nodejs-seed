@@ -7,7 +7,7 @@ require('./../config/model')(config);
 
 // configure the express app settings
 var app = express();
-require('./../config/express')(app, config);
+
 
 // create a normal HTTP server
 var http = require('http');
@@ -23,6 +23,10 @@ if (_.isNumber(config.portSecure)) {
   var fs = require('fs');
   var https = require('https');
 
+  // Generate the private key and certificate with these commands    
+  // openssl genrsa 1024 > private.key
+  // openssl req -new -key private.key -out cert.csr
+  // openssl x509 -req -in cert.csr -signkey private.key -out certificate.pem
   var httpsOptions = {
     key: fs.readFileSync(config.root + '/private.key'),
     cert: fs.readFileSync(config.root + '/certificate.pem')
@@ -34,7 +38,7 @@ if (_.isNumber(config.portSecure)) {
   });
 
 
-  // Secure traffic only if desired
+  // Secure traffic only if desired -needs to be the first middleware
   if (config.httpRedirectToHttps) {
     app.all('*', function (req, res, next) {
       if (req.secure) {
@@ -66,4 +70,7 @@ function onError(port, error) {
       throw error;
   }
 }
+
+// configure all the express routes
+require('./../config/express')(app, config);
 
