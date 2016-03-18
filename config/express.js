@@ -1,5 +1,6 @@
 var express = require('express');
 var glob = require('glob');
+var extend = require('node.extend');
 
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');

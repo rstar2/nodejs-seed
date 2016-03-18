@@ -11,7 +11,10 @@ var config = {
     app: {
       name: 'nodejs-site-skeleton'
     },
+
     port: process.env.PORT || 3000,
+    //portSecure: process.env.PORT_SECURE || 3443,
+    httpRedirectToHttps: true,
 
     // properties for the 'express-session' middleware
     session: {
@@ -47,6 +50,8 @@ var config = {
 
   // production configuration
   production: {
+    port: 80,
+    portSecure: 443,
     db: 'mongodb://localhost/nodejs-site-skeleton-prod',
     google_analytics_id: 'UA-74206119-2'
   }
